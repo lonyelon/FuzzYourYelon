@@ -6,52 +6,13 @@ public class File {
     private String name;
     private File parent;
     private ArrayList<File> children;
-    private int type;
 
-    // ---- ---- Static methods ---- ----
-
-    public static File getFilesFromUrl(String url) {
-        File main = new File("");
-        File last = main;
-
-        String buffer = "";
-        int slashCount = 0;
-
-        for (int i = 0; i < url.length(); i++) {
-            if (url.charAt(i) == '/' || i == url.length() - 1) {
-                slashCount++;
-
-                if (slashCount == 3) {
-                    main = new File(buffer);
-                    last = main;
-                    buffer = "";
-                } else if (slashCount > 3) {
-                    if (i == url.length() - 1) {
-                        buffer += url.charAt(i);
-                    }
-                    File tmp = new File(buffer);
-
-                    last.addChildren(tmp);
-                    last = tmp;
-
-                    buffer = "";
-                } else {
-                    buffer += url.charAt(i);
-                }
-            } else {
-                buffer += url.charAt(i);
-            }
-        }
-
-        main.clearUrl(0);
-
-        return main;
+    public File(String name) {
+        this.name = name;
+        this.children = new ArrayList<>();
     }
 
-
-    // ---- ---- Methods ---- ----
-
-    private void clearUrl(int depth) {
+    public void clearUrl(int depth) {
         if (this.name.equals("..") && this.parent != null && this.parent.getParent() != null) {
             for (File c: this.children) {
                 this.parent.getParent().addChildren(c);
@@ -108,8 +69,6 @@ public class File {
         }
     }
 
-    // ---- ---- Getters and Setters ---- ----
-
     public String getUrl() {
         if (this.parent == null) {
             return this.getName();
@@ -133,18 +92,16 @@ public class File {
         return this.name;
     }
 
-    public File(String name) {
-        this.name = name;
-        this.children = new ArrayList<>();
-    }
-
     public void addChildren(File f) {
-
         this.children.add(f);
         f.setParent(this);
     }
 
     public void setParent(File f) {
         this.parent = f;
+    }
+
+    @Override public String toString() {
+        return this.name;
     }
 }
