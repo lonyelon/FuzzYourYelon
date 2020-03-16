@@ -1,5 +1,7 @@
 package com.fyy.utils;
 
+import com.fyy.misc.Printer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,17 +29,20 @@ public class PageScanner {
                 html.add(inputLine);
             in.close();
         } catch (IOException e) {
-            System.out.println("Excepción de IO al leer el HTML de " + f.getUrl());
+            Printer.error("Scanner: Error reading " + f.getUrl());
         }
         return html;
     }
 
     public void getFilesUrl() {
         boolean found = true;
+        int newfiles = 0;
+
         for (int i = 0; found; i++) {
+            ArrayList<PageFile> files = new ArrayList<>();
             found = false;
 
-            ArrayList<PageFile> files = this.f.getFilesExt("html");
+            files = this.f.getFilesExt("html");
             files.addAll(this.f.getFilesExt("htm"));
 
             files.addAll(this.f.getFilesExt("asp"));
@@ -47,12 +52,18 @@ public class PageScanner {
 
             files.add(this.f);
 
+            newfiles = files.size() - newfiles;
+
+            Printer.println("Scanner: Found " + newfiles + " files on round " + (i + 1) + " (" + files.size() + " total web files).");
+
             for (PageFile a : files) {
                 if (!a.isScanned()) {
                     this.findFilesInUrl(a);
                     found = true;
                 }
             }
+
+            newfiles = files.size();
 
             this.f.clearUrl();
         }

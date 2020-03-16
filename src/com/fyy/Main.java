@@ -1,9 +1,8 @@
 package com.fyy;
 
+import com.fyy.misc.Printer;
 import com.fyy.utils.PageFile;
 import com.fyy.utils.PageScanner;
-
-import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,10 +10,10 @@ public class Main {
         ps.getFilesUrl();
         ps.getFiles().clearUrl();
         ps.getFiles().print();
-        System.out.println("Found " + ps.getFiles().getAllChildren().size() + " files.");
+        Printer.success("Found " + ps.getFiles().getAllChildren().size() + " files.");
 
         for (PageFile x: ps.getFiles().getFilesExt("pdf")) {
-            System.out.println(x.getUrl());
+            Printer.println(x.getUrl());
         }
     }
 }

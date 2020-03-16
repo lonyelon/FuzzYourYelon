@@ -1,5 +1,7 @@
 package com.fyy.utils;
 
+import com.fyy.misc.Printer;
+
 import java.util.ArrayList;
 import java.io.*;
 import java.util.regex.Matcher;
@@ -91,20 +93,16 @@ public class PageFile {
 
     protected void print(int depth, boolean islast) {
         for (int i = 0; i < depth; i++) {
-            System.out.print("    ");
+            Printer.print("    ");
         }
 
-        System.out.println(this.name);
+        Printer.println(this.name);
 
         for (int i = 0; i < this.children.size(); i++) {
             if (i == this.children.size() - 1)
                 this.children.get(i).print(depth + 1, true);
             else
                 this.children.get(i).print(depth + 1, false);
-        }
-
-        if (depth == 0) {
-            System.out.println();
         }
     }
 
