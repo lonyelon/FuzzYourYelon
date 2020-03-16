@@ -1,18 +1,20 @@
 package com.fyy;
 
-import com.fyy.utils.File;
-import com.fyy.utils.UrlTools;
+import com.fyy.utils.PageFile;
+import com.fyy.utils.PageScanner;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
-        Pattern p = Pattern.compile("a(bc)");
-        Matcher m = p.matcher("abc");
-        for (int i = 0; m.find(); i++) {
-            System.out.println(m.group(1));
+        PageScanner ps = new PageScanner("http://vilagarcia.es");
+        ps.getFilesUrl();
+        ps.getFiles().clearUrl();
+        ps.getFiles().print();
+        System.out.println("Found " + ps.getFiles().getAllChildren().size() + " files.");
+
+        for (PageFile x: ps.getFiles().getFilesExt("pdf")) {
+            System.out.println(x.getUrl());
         }
     }
 }
