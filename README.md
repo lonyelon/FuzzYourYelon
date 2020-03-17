@@ -5,9 +5,12 @@ I am not responsible for the use (or misuse) of this tool, I just did it for fun
 # Future plans
 - [x] Scan hypertext documents.
 - [x] Save directories.
-- [ ] Save files.
-- [ ] Add some kind of progress bar.
-- [ ] Brute force url .
+- [x] Add some kind of progress bar.
+- [ ] Brute force url.
+- [x] Console interface.
+- [ ] Extra console functions.
+  - [ ] Clone directories.
+  - [ ] Save files
 - [ ] Graphical user interface.
 
 # Credits
