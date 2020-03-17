@@ -34,7 +34,7 @@ public class PageScanner {
         return html;
     }
 
-    public void getFilesUrl() {
+    public void scan() {
         boolean found = true;
         int newfiles = 0;
 
@@ -49,6 +49,8 @@ public class PageScanner {
             files.addAll(this.f.getFilesExt("aspx"));
 
             files.addAll(this.f.getFilesExt("php"));
+
+            files.addAll(this.f.getFilesExt(""));
 
             files.add(this.f);
 
@@ -72,7 +74,7 @@ public class PageScanner {
     public void findFilesInUrl(PageFile PageFile) {
         ArrayList<String> a = getBody(PageFile);
 
-        String urlPattern = "[A-Za-z0-9/_\\.-]*";
+        String urlPattern = "[A-Za-z0-9\\/_\\.\\-\\+%]+";
 
         Pattern p_action = Pattern.compile("action=\"([" + urlPattern + "]+)");
         Pattern p_src = Pattern.compile("src=\"([" + urlPattern + "]+)");

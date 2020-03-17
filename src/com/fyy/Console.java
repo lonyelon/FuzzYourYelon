@@ -5,7 +5,6 @@ import com.fyy.misc.Printer;
 import com.fyy.utils.PageFile;
 import com.fyy.utils.PageScanner;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,14 +52,16 @@ public class Console {
                         Printer.println("exit\t\tCloses the software.");
                         Printer.println();
                         break;
+
                     case "scan":
                         if (this.ps == null) {
                             Printer.error("No target set, type \"set target [target]\" or look at \"help\".");
                             break;
                         }
 
-                        ps.getFilesUrl();
+                        ps.scan();
                         break;
+
                     case "list":
                         if (this.ps == null) {
                             Printer.error("No files to list! try \"help\".");
@@ -83,6 +84,7 @@ public class Console {
                             Printer.error("\"" + RegEx + "\" is not a valid RegEx.");
                         }
                         break;
+
                     case "set":
                         if (commands.length != 3) {
                             Printer.error("Incorrect number of parameters. Type \"help\".");
@@ -95,11 +97,14 @@ public class Console {
                                 break;
                         }
                         break;
+
                     case "exit":
                         this.running = false;
                         break;
+
                     case "":
                         break;
+
                     default:
                         Printer.error("Command \"" + commands[0] + "\" not found");
                 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fyy.gui.Controller">
+   <children>
+      <TabPane prefHeight="462.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE">
+         <tabs>
+            <Tab text="Main">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="txt_target" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="185.0" />
+                        <Button fx:id="btn_target" layoutX="204.0" layoutY="14.0" mnemonicParsing="false" onAction="#lockTarget" text="Set target" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Files">
+               <content>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="402.0" prefWidth="689.0">
+                           <children>
+                              <AnchorPane prefHeight="21.0" prefWidth="761.0">
+                                 <children>
+                                    <TextField fx:id="txt_filter" layoutX="521.0" layoutY="13.0" onAction="#filterFiles" onKeyPressed="#filterFiles" onKeyReleased="#filterFiles" onKeyTyped="#filterFiles" prefHeight="25.0" prefWidth="220.0" promptText="Filter" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                    <Button fx:id="btn_scan" layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#scanUrl" text="Scan website" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="394.0" prefWidth="761.0" style="-fx-padding: 10px;">
+                                 <children>
+                                    <ListView fx:id="lst_files" layoutX="10.0" layoutY="10.0" prefHeight="309.0" prefWidth="715.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </VBox>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Button layoutX="37.0" layoutY="355.0" mnemonicParsing="false" onAction="#save" text="Download selected files" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+      <AnchorPane style="-fx-padding: 10px;" VBox.vgrow="ALWAYS">
+         <children>
+            <TextArea editable="false" layoutX="222.0" promptText="Console output" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children>
+      </AnchorPane>
+      <TextFlow prefHeight="36.0" prefWidth="900.0" textAlignment="RIGHT">
+         <children>
+            <Label text="Made by LonYelon, 2020" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </VBox.margin>
+      </TextFlow>
+   </children>
+</VBox>

@@ -1,7 +1,36 @@
 package com.fyy.utils;
 
 
+import com.fyy.misc.Printer;
+
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class UrlTools {
+
+    public static void readRobots(PageFile f) {
+        ArrayList<PageFile> found;
+
+        PageFile robots = new PageFile("robots.txt");
+
+        f.addChildren(robots);
+
+        ArrayList<String> body = PageScanner.getBody(robots);
+
+        Pattern p = Pattern.compile("Disallow: ([A-Za-z\\/\\._\\-\\+]+)");
+        for (String line: body) {
+            Matcher m = p.matcher(line);
+            if (m.find()) {
+                if (m.group(1).charAt(0) == '/') {
+                    f.addChildren(new PageFile(m.group(1).substring(1)));
+                } else {
+                    f.addChildren(new PageFile(m.group(1)));
+                }
+            }
+        }
+    }
+
     public static PageFile urlToFile(String url) {
         PageFile main = new PageFile("");
         PageFile last = main;

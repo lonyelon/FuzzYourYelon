@@ -25,32 +25,46 @@ public class PageFile {
 
     // Removes all ".." and "." from the url.
     public void clearUrl() {
-        if (this.name.equals("..") && this.parent != null) {
-            PageFile pa = this.parent.getParent();
+        try {
+            if (this.name.equals("..") && this.parent != null) {
+                PageFile pa = this.parent.getParent();
 
-            if (pa == null) {
-                pa = this.parent;
-            }
+                if (pa == null) {
+                    pa = this.parent;
+                }
 
-            for (PageFile c : this.children) {
-                pa.addChildren(c);
-            }
-            parent.removeChild(this);
-        } else if (this.name.equals(".")) {
-            PageFile pa = this.parent;
+                for (PageFile c : this.children) {
+                    pa.addChildren(c);
+                }
+                parent.removeChild(this);
+            } else if (this.name.equals(".")) {
+                PageFile pa = this.parent;
 
-            if (pa == null) {
-                pa = this;
-            }
+                if (pa == null) {
+                    pa = this;
+                }
 
-            for (PageFile c : this.children) {
-                pa.addChildren(c);
+                for (PageFile c : this.children) {
+                    pa.addChildren(c);
+                }
+                this.removeChild(this);
+            } else if (this.name.charAt(0) == '/') {
+                PageFile pa = this.getAbsoluteParent();
+
+                this.parent.removeChild(this);
+                pa.addChildren(this);
+            } else {
+                for (int i = 0; i < this.children.size(); i++) {
+                    if (this.children.get(i).getName().equals("")) {
+                        this.children.remove(i);
+                        i--;
+                    } else {
+                        this.children.get(i).clearUrl();
+                    }
+                }
             }
-            this.removeChild(this);
-        } else {
-            for (int i = 0; i < this.children.size(); i++) {
-                this.children.get(i).clearUrl();
-            }
+        } catch (StringIndexOutOfBoundsException ex) {
+            Printer.error("String out of bounds at " + this.getName() + ", " + this.getUrl());
         }
     }
 
@@ -117,6 +131,12 @@ public class PageFile {
     // Adds a child to the url, if it exists,
     // it merges the nodes.
     public void addChildren(PageFile f) {
+        if (!this.getAbsoluteParent().getName().equals(f.getAbsoluteParent().getName()) && f.getAbsoluteParent().getName().contains("http")) {
+            return;
+        }
+
+
+
         boolean found = false;
 
         for (PageFile c : this.children) {
@@ -150,7 +170,7 @@ public class PageFile {
     }
 
     public void save() {
-        File f = new File("found/" + this.getUrl().substring(6));
+        File f = new File("found/" + this.getUrl().substring(this.getUrl().indexOf("//") + 2));
         if (this.children.size() != 0) {
             f.mkdirs();
 
@@ -162,7 +182,14 @@ public class PageFile {
 
     public ArrayList<PageFile> getFilesExt(String ext) {
         ArrayList<PageFile> files = new ArrayList<>();
-        Pattern p_action = Pattern.compile("\\.(" + ext + ")$");
+        Pattern p_action;
+
+        if (ext.equals("")) {
+            p_action = Pattern.compile("\\/([^\\.]+)$");
+        } else {
+            p_action = Pattern.compile("\\.(" + ext + ")$");
+        }
+
         for (PageFile pf: this.getAllChildren()) {
             Matcher m = p_action.matcher(pf.getUrl().toLowerCase());
             if (m.find()) {
@@ -173,6 +200,20 @@ public class PageFile {
     }
 
     // ---- ---- ---- [GETTERS AND SETTERS] ---- ---- ----
+
+    public PageFile getAbsoluteParent() {
+        PageFile pa = this.parent;
+
+        if (pa != null) {
+            while (pa.getParent() != null) {
+                pa = pa.getParent();
+            }
+
+            return pa;
+        }
+
+        return this;
+    }
 
     public boolean isScanned() {
         return scanned;
