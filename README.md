@@ -8,6 +8,7 @@ I am not responsible for the use (or misuse) of this tool, I just did it for fun
 - [x] Add some kind of progress bar.
 - [ ] Brute force url.
 - [x] Console interface.
+- [ ] Load help from file.
 - [ ] Extra console functions.
   - [ ] Clone directories.
   - [ ] Save files
