@@ -8,7 +8,7 @@ public class Printer {
     }
 
     public static void println(String msg) {
-        System.out.println(Color.BLACK + msg + Color.RESET);
+        System.out.println(msg + Color.RESET);
     }
 
     public static void print() {
@@ -16,7 +16,7 @@ public class Printer {
     }
 
     public static void print(String msg) {
-        System.out.print(Color.BLACK + msg + Color.RESET);
+        System.out.print(msg + Color.RESET);
     }
 
     public static void success(String msg) {
