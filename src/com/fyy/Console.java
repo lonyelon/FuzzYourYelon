@@ -59,7 +59,7 @@ public class Console {
                             break;
                         }
 
-                        ps.scan();
+                        ps.run();
                         break;
 
                     case "list":

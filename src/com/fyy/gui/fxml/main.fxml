@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox stylesheets="@style.css" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fyy.gui.Controller">
+<VBox prefHeight="600.0" prefWidth="900.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fyy.gui.Controller">
    <children>
       <TabPane prefHeight="462.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE">
          <tabs>
@@ -34,19 +34,20 @@
                               <AnchorPane prefHeight="21.0" prefWidth="761.0">
                                  <children>
                                     <TextField fx:id="txt_filter" layoutX="521.0" layoutY="13.0" onAction="#filterFiles" onKeyPressed="#filterFiles" onKeyReleased="#filterFiles" onKeyTyped="#filterFiles" prefHeight="25.0" prefWidth="220.0" promptText="Filter" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                                    <Button fx:id="btn_scan" layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#scanUrl" text="Scan website" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                    <Button fx:id="btn_scan" layoutX="14.0" layoutY="13.0" mnemonicParsing="false" onAction="#scanUrl" text="Fuzz selected files" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                    <CheckBox fx:id="cb_recursive" layoutX="133.0" layoutY="13.0" mnemonicParsing="false" text="Recursive" />
                                  </children>
                               </AnchorPane>
                               <AnchorPane prefHeight="394.0" prefWidth="761.0" style="-fx-padding: 10px;">
                                  <children>
-                                    <ListView fx:id="lst_files" layoutX="10.0" layoutY="10.0" prefHeight="309.0" prefWidth="715.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <ListView fx:id="lst_files" layoutX="10.0" layoutY="10.0" onMouseClicked="#fileListClick" prefHeight="309.0" prefWidth="715.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
                            </children>
                         </VBox>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <Button layoutX="37.0" layoutY="355.0" mnemonicParsing="false" onAction="#save" text="Download selected files" />
+                              <Button fx:id="btn_download" layoutX="37.0" layoutY="355.0" mnemonicParsing="false" onAction="#save" text="Download selected files" />
                            </children>
                         </AnchorPane>
                      </children>
@@ -57,7 +58,7 @@
       </TabPane>
       <AnchorPane prefHeight="140.0" prefWidth="900.0" style="-fx-padding: 10px;" VBox.vgrow="ALWAYS">
          <children>
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="220.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <ScrollPane fx:id="sp_console" fitToHeight="true" fitToWidth="true" prefHeight="220.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <content>
                   <TextFlow fx:id="tf_console" AnchorPane.bottomAnchor="96.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-671.0" AnchorPane.topAnchor="0.0" />
                </content>

@@ -12,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-import javax.swing.text.TableView;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,14 +19,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 public class Controller {
     private String target;
-    private PageScanner ps;
+    private PageScanner mainScanner;
+    private PageScanner scanner;
 
     // ---- ---- ---- FX Elements ---- ---- ----
 
@@ -37,6 +40,8 @@ public class Controller {
     public ChoiceBox sl_http;
     public TextFlow tf_console;
     public Button btn_scan;
+    public Button btn_download;
+    public ScrollPane sp_console;
 
     // ---- ---- ---- FXML Methods ---- ---- ----
 
@@ -45,6 +50,7 @@ public class Controller {
         Printer.controller = this;
 
         this.btn_scan.setDisable(true);
+        this.btn_download.setDisable(true);
 
         this.sl_http.getItems().add("http://");
         this.sl_http.getItems().add("https://");
@@ -59,11 +65,11 @@ public class Controller {
             website = this.sl_http.getValue().toString() + website;
         }
 
-        this.ps = new PageScanner(website);
+        this.mainScanner = new PageScanner(website);
 
         Printer.success("Target succesfully set.");
 
-        UrlTools.readRobots(this.ps.getFiles());
+        UrlTools.readRobots(this.mainScanner.getFiles());
         this.updateList();
 
         Printer.println("Software ready to fuzz.");
@@ -71,13 +77,13 @@ public class Controller {
 
     @FXML
     public void scanUrl() {
-        if (ps == null) {
+        if (mainScanner == null) {
             return;
         }
 
-        ps.scan();
+        this.btn_scan.setDisable(true);
 
-        this.updateList();
+        mainScanner.start();
     }
 
     @FXML
@@ -86,11 +92,21 @@ public class Controller {
     }
 
     @FXML
+    public void fileListClick() {
+        if (this.lst_files.getSelectionModel().getSelectedItems().size() != 0) {
+            if (!this.mainScanner.isScanning()) {
+                this.btn_scan.setDisable(false);
+            }
+            this.btn_download.setDisable(false);
+        }
+    }
+
+    @FXML
     public void save() {
         ObservableList<String> selected = this.lst_files.getSelectionModel().getSelectedItems();
         ArrayList<PageFile> f = new ArrayList<>();
 
-        for (PageFile a : this.ps.getFiles().getAllChildren()) {
+        for (PageFile a : this.mainScanner.getFiles().getAllChildren()) {
             for (String s : selected) {
                 if (a.getUrl().equals(s)) {
                     f.add(a);
@@ -100,7 +116,7 @@ public class Controller {
         }
 
         for (PageFile a : f) {
-            this.ps.getFiles().save();
+            this.mainScanner.getFiles().save();
 
             try {
                 URL website = new URL(a.getUrl());
@@ -120,12 +136,21 @@ public class Controller {
     // ---- ---- ---- Other Methods ---- ---- ----
 
     public void addOutput(String out, boolean newline) {
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+        out = "[" + dateFormat.format(date) + "] " + out;
+
+        final String text = out;
+
         Platform.runLater(() -> {
-            Label lb = new Label(out);
+            Label lb = new Label(text);
             this.tf_console.getChildren().add(lb);
+
             if (newline) {
                 this.tf_console.getChildren().add(new Text(System.lineSeparator()));
             }
+
+            this.sp_console.setVvalue(this.sp_console.getVmax());
         });
     }
 
@@ -143,7 +168,7 @@ public class Controller {
                 this.lst_files.getItems().clear();
                 this.lst_files.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-                for (PageFile a : this.ps.getFiles().getAllChildren()) {
+                for (PageFile a : this.mainScanner.getFiles().getAllChildren()) {
                     Matcher m = p.matcher(a.getUrl().toLowerCase());
 
                     if (m.find()) {

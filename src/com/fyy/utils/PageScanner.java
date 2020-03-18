@@ -1,5 +1,6 @@
 package com.fyy.utils;
 
+import com.fyy.gui.Controller;
 import com.fyy.misc.Printer;
 
 import java.io.BufferedReader;
@@ -9,12 +10,25 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.lang.Thread;
 
-public class PageScanner {
+public class PageScanner extends Thread {
+    private Controller controller;
     private PageFile f;
+    private boolean scanning;
 
     public PageScanner(String website) {
+        super();
         this.f = UrlTools.urlToFile(website);
+        this.scanning = false;
+    }
+
+    public void setController(Controller c) {
+        this.controller = c;
+    }
+
+    public boolean isScanning() {
+        return this.scanning;
     }
 
     public static ArrayList<String> getBody(PageFile f) {
@@ -34,10 +48,11 @@ public class PageScanner {
         return html;
     }
 
-    public void scan() {
+    public void run() {
         boolean found = true;
         int newfiles = 0;
 
+        this.scanning = true;
         for (int i = 0; found; i++) {
             ArrayList<PageFile> files = new ArrayList<>();
             found = false;
@@ -68,6 +83,11 @@ public class PageScanner {
             newfiles = files.size();
 
             this.f.clearUrl();
+        }
+
+        this.scanning = false;
+        if (this.controller != null) {
+            this.controller.updateList();
         }
     }
 
