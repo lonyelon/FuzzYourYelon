@@ -136,7 +136,6 @@ public class PageFile {
         }
 
 
-
         boolean found = false;
 
         for (PageFile c : this.children) {
@@ -155,13 +154,22 @@ public class PageFile {
         }
     }
 
-     // Gets all children for the node, and their
-     // children, and... you get the point.
+    // Gets all children for the node, and their
+    // children, and... you get the point.
     public ArrayList<PageFile> getAllChildren() {
+        return this.getAllChildren(0);
+    }
+
+    protected ArrayList<PageFile> getAllChildren(int depth) {
         ArrayList<PageFile> r = new ArrayList<>();
+
+        if (depth == 0) {
+            r.add(this);
+        }
+
         for (PageFile c : this.children) {
             r.add(c);
-            ArrayList<PageFile> carray = c.getAllChildren();
+            ArrayList<PageFile> carray = c.getAllChildren(depth + 1);
             for (PageFile x : carray) {
                 r.add(x);
             }
@@ -171,13 +179,21 @@ public class PageFile {
 
     public void save() {
         File f = new File("found/" + this.getUrl().substring(this.getUrl().indexOf("//") + 2));
+
+        Printer.print("Downloading " + f.getName() + "... ");
+
         if (this.children.size() != 0) {
+            Printer.success("Done!");
+            Printer.print("Downloading children files... ");
+
             f.mkdirs();
 
             for (PageFile pf : this.children) {
                 pf.save();
             }
         }
+
+        Printer.success("Done!");
     }
 
     public ArrayList<PageFile> getFilesExt(String ext) {
@@ -190,7 +206,7 @@ public class PageFile {
             p_action = Pattern.compile("\\.(" + ext + ")$");
         }
 
-        for (PageFile pf: this.getAllChildren()) {
+        for (PageFile pf : this.getAllChildren()) {
             Matcher m = p_action.matcher(pf.getUrl().toLowerCase());
             if (m.find()) {
                 files.add(pf);

@@ -18,6 +18,8 @@ public class UrlTools {
 
         ArrayList<String> body = PageScanner.getBody(robots);
 
+        Printer.print("Reading robots.txt... ");
+
         Pattern p = Pattern.compile("Disallow: ([A-Za-z\\/\\._\\-\\+]+)");
         for (String line: body) {
             Matcher m = p.matcher(line);
@@ -29,6 +31,8 @@ public class UrlTools {
                 }
             }
         }
+
+        Printer.done();
     }
 
     public static PageFile urlToFile(String url) {
