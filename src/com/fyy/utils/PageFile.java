@@ -2,6 +2,10 @@ package com.fyy.utils;
 
 import com.fyy.misc.Printer;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.io.*;
 import java.util.regex.Matcher;
@@ -64,7 +68,7 @@ public class PageFile {
                 }
             }
         } catch (StringIndexOutOfBoundsException ex) {
-            Printer.error("String out of bounds at " + this.getName() + ", " + this.getUrl());
+            Printer.error("PageFile: String out of bounds at " + this.getName() + ", " + this.getUrl());
         }
     }
 
@@ -178,22 +182,34 @@ public class PageFile {
     }
 
     public void save() {
+
+        if (this.parent != null) {
+            File pf = new File("found/" + this.parent.getUrl().substring(this.getUrl().indexOf("//") + 2));
+            pf.mkdirs();
+        }
+
         File f = new File("found/" + this.getUrl().substring(this.getUrl().indexOf("//") + 2));
 
-        Printer.print("Downloading " + f.getName() + "... ");
-
         if (this.children.size() != 0) {
-            Printer.success("Done!");
-            Printer.print("Downloading children files... ");
-
             f.mkdirs();
 
             for (PageFile pf : this.children) {
                 pf.save();
             }
+        } else {
+            try {
+                URL website = new URL(this.getUrl());
+                ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+                FileOutputStream fos = new FileOutputStream("./found/" + this.getUrl().substring(this.getUrl().indexOf("//") + 2));
+                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            } catch (MalformedURLException e) {
+                Printer.error("Malformed url in file " + this.getUrl());
+            } catch (FileNotFoundException e) {
+                Printer.error("File not found " + this.getUrl());
+            } catch (IOException e) {
+                Printer.error("IOExcaption at " + this.getUrl());
+            }
         }
-
-        Printer.success("Done!");
     }
 
     public ArrayList<PageFile> getFilesExt(String ext) {

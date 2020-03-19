@@ -16,11 +16,18 @@ public class PageScanner extends Thread {
     private Controller controller;
     private PageFile f;
     private boolean scanning;
+    private boolean recursive;
 
     public PageScanner(String website) {
         super();
+
+        this.recursive = false;
         this.f = UrlTools.urlToFile(website);
         this.scanning = false;
+    }
+
+    public void setRecursive(boolean recursive) {
+        this.recursive = recursive;
     }
 
     public void setController(Controller c) {
@@ -53,6 +60,10 @@ public class PageScanner extends Thread {
         int newfiles = 0;
 
         this.scanning = true;
+        if (this.controller != null) {
+            this.controller.updateProgressBar();
+        }
+
         for (int i = 0; found; i++) {
             ArrayList<PageFile> files = new ArrayList<>();
             found = false;
@@ -83,22 +94,28 @@ public class PageScanner extends Thread {
             newfiles = files.size();
 
             this.f.clearUrl();
+
+            if (!this.recursive) {
+                break;
+            }
         }
 
         this.scanning = false;
         if (this.controller != null) {
             this.controller.updateList();
+            this.controller.updateProgressBar();
         }
     }
 
     public void findFilesInUrl(PageFile PageFile) {
         ArrayList<String> a = getBody(PageFile);
 
-        String urlPattern = "[A-Za-z0-9\\/_\\.\\-\\+%]+";
+        String urlPattern = "(http[s]{0,1}:\\/\\/){0,1}([A-Za-z0-9\\/_\\.\\-\\+%]+)";
+        int groupNum = 2;
 
-        Pattern p_action = Pattern.compile("action=\"([" + urlPattern + "]+)");
-        Pattern p_src = Pattern.compile("src=\"([" + urlPattern + "]+)");
-        Pattern p_href = Pattern.compile("href=\"([" + urlPattern + "]+)");
+        Pattern p_action = Pattern.compile("action=\"" + urlPattern);
+        Pattern p_src = Pattern.compile("src=\"" + urlPattern);
+        Pattern p_href = Pattern.compile("href=\"" + urlPattern);
 
         Matcher m;
 
@@ -106,23 +123,23 @@ public class PageScanner extends Thread {
             m = p_action.matcher(l);
             for (int i = 0; m.find(); i++) {
                 if (PageFile.getParent() != null)
-                    PageFile.getParent().addChildren(UrlTools.urlToFile(m.group(1)));
+                    PageFile.getParent().addChildren(UrlTools.urlToFile(m.group(groupNum)));
                 else
-                    PageFile.add(UrlTools.urlToFile(m.group(1)));
+                    PageFile.add(UrlTools.urlToFile(m.group(groupNum)));
             }
             m = p_src.matcher(l);
             for (int i = 0; m.find(); i++) {
                 if (PageFile.getParent() != null)
-                    PageFile.getParent().addChildren(UrlTools.urlToFile(m.group(1)));
+                    PageFile.getParent().addChildren(UrlTools.urlToFile(m.group(groupNum)));
                 else
-                    PageFile.add(UrlTools.urlToFile(m.group(1)));
+                    PageFile.add(UrlTools.urlToFile(m.group(groupNum)));
             }
             m = p_href.matcher(l);
             for (int i = 0; m.find(); i++) {
                 if (PageFile.getParent() != null)
-                    PageFile.getParent().addChildren(UrlTools.urlToFile(m.group(1)));
+                    PageFile.getParent().addChildren(UrlTools.urlToFile(m.group(groupNum)));
                 else
-                    PageFile.add(UrlTools.urlToFile(m.group(1)));
+                    PageFile.add(UrlTools.urlToFile(m.group(groupNum)));
             }
         }
         PageFile.setScanned(true);

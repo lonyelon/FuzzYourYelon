@@ -42,6 +42,8 @@ public class Controller {
     public Button btn_scan;
     public Button btn_download;
     public ScrollPane sp_console;
+    public CheckBox cb_recursive;
+    public ProgressIndicator pg_scan;
 
     // ---- ---- ---- FXML Methods ---- ---- ----
 
@@ -66,6 +68,7 @@ public class Controller {
         }
 
         this.mainScanner = new PageScanner(website);
+        this.mainScanner.setController(this);
 
         Printer.success("Target succesfully set.");
 
@@ -84,6 +87,11 @@ public class Controller {
         this.btn_scan.setDisable(true);
 
         mainScanner.start();
+    }
+
+    @FXML
+    public void setRecursive() {
+        this.mainScanner.setRecursive(this.cb_recursive.isSelected());
     }
 
     @FXML
@@ -116,20 +124,9 @@ public class Controller {
         }
 
         for (PageFile a : f) {
-            this.mainScanner.getFiles().save();
-
-            try {
-                URL website = new URL(a.getUrl());
-                ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-                FileOutputStream fos = new FileOutputStream("./found/" + a.getUrl().substring(a.getUrl().indexOf("//") + 2));
-                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            } catch (MalformedURLException e) {
-                Printer.error("Malformed url in file " + a.getUrl());
-            } catch (FileNotFoundException e) {
-                Printer.error("File not found " + a.getUrl());
-            } catch (IOException e) {
-                Printer.error("IOExcaption at " + a.getUrl());
-            }
+            Printer.print("Downloading \"" + a.getName() + "\"...");
+            a.save();
+            Printer.done();
         }
     }
 
@@ -177,6 +174,16 @@ public class Controller {
                 }
             } catch (PatternSyntaxException e) {
                 this.txt_filter.getStyleClass().add("error");
+            }
+        });
+    }
+
+    public void updateProgressBar() {
+        Platform.runLater(()-> {
+            if (this.mainScanner != null && this.mainScanner.isScanning()) {
+                this.pg_scan.setVisible(true);
+            } else {
+                this.pg_scan.setVisible(false);
             }
         });
     }

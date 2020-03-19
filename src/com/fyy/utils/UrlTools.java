@@ -68,6 +68,10 @@ public class UrlTools {
                     last.addChildren(tmp);
                     last = tmp;
 
+                    if (main.getName() == "") {
+                        main = last;
+                    }
+
                     buffer = "";
                 } else {
                     buffer += url.charAt(i);
