@@ -23,8 +23,8 @@ Now you can just use the command `fyy` to use the tool!
 - [x] Console interface.
 - [ ] Load help from file.
 - [ ] Extra console functions.
-  - [ ] Clone directories.
-  - [ ] Save files
+  - [x] Clone directories.
+  - [x] Save files
 - [ ] Graphical user interface.
 
 # Credits
